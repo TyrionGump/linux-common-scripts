@@ -1,15 +1,27 @@
 #!/bin/bash
 
-# Install prerequisite packages
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
+# Uninstall old versions.
+sudo apt-get remove docker docker-engine docker.io containerd runc
 
-# Add Docker GPG key (verify that the packages you download are from the official Docker repository)
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# Update the apt package index and install packages to allow apt to use a repository over HTTPS.
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg
 
-# Add Docker repository
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add Docker GPG key (verify that the packages you download are from the official Docker repository).
+sudo mkdir -m 0755 -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-# Install Docker
+# Add Docker repository.
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Avoid a GPG error.
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+sudo apt-get update
+
+# Install Docker Engine, containerd, and Docker Compose.
 sudo apt install docker-ce docker-ce-cli containerd.io
 
 # Verify Docker installation
@@ -21,13 +33,6 @@ sudo systemctl start docker
 
 # Add your user to the Docker group (optional). Rememer reconnect the session to take effects or use "su - $USER".
 # sudo usermod -aG docker $USER
-
-
-# Download the latest version of Docker Compose (please check the latest version on https://github.com/docker/compose/releases and please the following 2.17.2)
-sudo curl -L "https://github.com/docker/compose/releases/download/2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-# Make the binary executable
-sudo chmod +x /usr/local/bin/docker-compose
 
 # Verify the installation (Docker Compose 2.0.0 replace the command of "docker-compose")
 docker compose version
