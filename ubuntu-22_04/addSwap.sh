@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Add a 2GB Swap file.
 sudo fallocate -l 2G /swapfile
 

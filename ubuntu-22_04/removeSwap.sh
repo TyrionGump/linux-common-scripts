@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Turn off the Swap
 sudo swapoff /swapfile
 
