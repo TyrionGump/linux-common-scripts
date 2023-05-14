@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# The following script refers to the following url:
+#   - https://kafka.apache.org/documentation/#security_ssl
+#   - https://raw.githubusercontent.com/confluentinc/confluent-platform-security-tools/master/kafka-generate-ssl.sh
 # Instructs Bash to immediately exit the script or terminate the current shell session if any command within the script exits with a non-zero status. By default, Bash scripts continue executing even if individual commands fail
 set -e
 
