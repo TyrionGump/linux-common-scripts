@@ -32,7 +32,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 
 # Add your user to the Docker group (optional). Rememer reconnect the session to take effects or use "su - $USER".
-# sudo usermod -aG docker $USER
+sudo usermod -aG docker $USER
 
 # Verify the installation (Docker Compose 2.0.0 replace the command of "docker-compose")
 docker compose version

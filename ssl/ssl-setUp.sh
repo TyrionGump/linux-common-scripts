@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Not sure if this can work for others but kafka requires the generated keystore should contain hostname (domains)!!!
+# Fixme - keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 # The following script refers to the following url:
 #   - https://kafka.apache.org/documentation/#security_ssl
 #   - https://raw.githubusercontent.com/confluentinc/confluent-platform-security-tools/master/kafka-generate-ssl.sh
@@ -24,6 +26,23 @@ KEYSTORE_SIGNED_CERT="cert-signed.pem"
 
 STDOUT_SECTION_START=">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 STDOUT_SECTION_END="<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+
+
+
+# >>> Check if keytool is available >>>
+echo
+echo $STDOUT_SECTION_START
+if ! command -v keytool &> /dev/null
+then
+    echo "keytool not found, installing JDK..."
+    sudo apt-get update
+    sudo apt-get install -y default-jdk
+else
+    echo "keytool is already installed."
+fi
+echo $STDOUT_SECTION_END
+# <<< Check if keytool is available <<<
+
 
 # >>> Sanitize the ssl files >>>
 # Ensure all related files are not exist.
@@ -86,6 +105,7 @@ echo $STDOUT_SECTION_END
 
 
 # >>> Generate truststore. Import the ca-cert into the trustsore. >>>
+echo
 echo $STDOUT_SECTION_START
 echo "Now the truststore will be generated from the certificate."
 echo
